@@ -3,15 +3,17 @@ import { getProfile } from "@/services/auth/profile";
 import { cookies } from "next/dist/client/components/headers";
 import { redirect } from "next/navigation";
 
-const Register = async () => {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const token = cookies().get(COOKIES_KEYS.TOKEN)?.value;
   const [profile] = await Promise.allSettled([getProfile(token)]);
 
-  if (token && profile.status === "fulfilled") {
-    return redirect("/dashboard");
+  if (!token || profile.status === "rejected") {
+    return redirect("/auth/login");
   }
 
-  return <div>Register</div>;
-};
-
-export default Register;
+  return <div className="mt-8">{children}</div>;
+}

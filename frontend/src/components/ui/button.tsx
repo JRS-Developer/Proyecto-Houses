@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { Loader } from "./loader";
 
 const buttonVariants = cva(
-  "inline-flex items-center gap-2 justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+  "inline-flex items-center gap-1 justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
   {
     variants: {
       variant: {
@@ -24,6 +24,7 @@ const buttonVariants = cva(
         default: "h-10 py-2 px-4",
         sm: "h-9 px-3 rounded-md",
         lg: "h-11 px-8 rounded-md",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {
@@ -36,8 +37,10 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
   loading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  href?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -49,26 +52,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       variant,
       size,
-      asChild = false,
+      leftIcon,
+      rightIcon,
       ...props
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button";
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         disabled={loading || disabled}
         {...props}
       >
-        {loading && (
-          <span className="animate-spin">
-            <Loader2 />
-          </span>
-        )}
-        <span>{children}</span>
-      </Comp>
+        <>
+          {Boolean(loading || leftIcon) &&
+            (loading ? <Loader /> : <span>{leftIcon}</span>)}
+          {children}
+          {rightIcon && <span>{rightIcon}</span>}
+        </>
+      </button>
     );
   }
 );

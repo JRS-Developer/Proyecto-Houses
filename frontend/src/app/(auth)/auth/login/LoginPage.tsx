@@ -19,16 +19,20 @@ import { AlertCircle } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { shallow } from "zustand/shallow";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z
     .string({
       required_error: "The email is required",
+      invalid_type_error: "The email is invalid",
     })
     .email(),
-  password: z.string({
-    required_error: "The password is required",
-  }),
+  password: z
+    .string({
+      required_error: "The password is required",
+    })
+    .min(1, "The password is required"),
 });
 
 type FormSchema = z.infer<typeof formSchema> & {
@@ -59,8 +63,13 @@ const Login = () => {
     control,
     handleSubmit,
     setError,
+    setFocus,
     formState: { isSubmitting, errors },
   } = form;
+
+  useEffect(() => {
+    setFocus("email");
+  }, [setFocus]);
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     try {
@@ -157,16 +166,6 @@ const Login = () => {
               </div>
             </form>
           </Form>
-
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?{" "}
-            <Link
-              href="/auth/register"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Create an account
-            </Link>
-          </p>
         </div>
       </div>
     </>

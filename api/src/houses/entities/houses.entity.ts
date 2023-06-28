@@ -33,4 +33,7 @@ export class House {
     onDelete: 'SET NULL',
   })
   user!: User | null;
+
+  @Column({ nullable: true })
+  userId?: number;
 }
