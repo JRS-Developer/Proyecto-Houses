@@ -48,7 +48,7 @@ const HouseCard = ({
         <div className="h-[250px] w-full relative rounded-md overflow-hidden ">
           <Image
             priority
-            src="https://loremflickr.com/640/480/house"
+            src={`https://loremflickr.com/1280/853/house?random=${h.id}`}
             alt={h.title}
             className="object-cover group-hover:opacity-75"
             fill

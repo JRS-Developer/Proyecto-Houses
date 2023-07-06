@@ -14,8 +14,10 @@ services:
     command: yarn start:dev
     ports:
       - 3000:3000
-    networks:
-      - main_network
+    network_mode: host
+    extra_hosts:
+      - "opensearch-node:127.0.0.1"
+      - "postgres:127.0.0.1"
 
   opensearch:
     image: opensearchproject/opensearch:latest
@@ -38,8 +40,6 @@ services:
     ports:
       - 9200:9200 # REST API
       - 9600:9600 # Performance Analyzer
-    networks:
-      - main_network # All of the containers will join the same Docker bridge network 
 
   postgres:
     image: postgres
@@ -52,8 +52,6 @@ services:
       - '5432:5432'
     volumes:
       - ./api/postgres:/var/lib/postgresql/data
-    networks:
-      - main_network
   pgadmin:
     container_name: pgadmin4
     image: dpage/pgadmin4
@@ -62,12 +60,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - '5050:80'
-    networks:
-      - main_network
+    extra_hosts:
+      - "postgres:127.0.0.1"
 
 volumes:
   opensearch-data:
-
-networks:
-  main_network:
-    driver: bridge

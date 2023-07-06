@@ -21,7 +21,11 @@ import {
 } from "./ui/tooltip";
 import { useState } from "react";
 import { Loader } from "./ui/loader";
-import { createHouse, updateHouse } from "@/services/houses";
+import {
+  createHouse,
+  getPriceRecommendation,
+  updateHouse,
+} from "@/services/houses";
 import { useRouter } from "next/navigation";
 import { House } from "@/types/house";
 import { axiosAPI } from "@/lib/axios";
@@ -102,6 +106,7 @@ const HouseForm = ({
     handleSubmit,
     formState: { isSubmitting },
     getValues,
+    setValue,
   } = form;
 
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
@@ -113,7 +118,6 @@ const HouseForm = ({
           yearBuilt: Number(data.yearBuilt),
           salePrice: Number(data.salePrice),
         });
-        await axios.post("/api/revalidate?path=/dashboard/houses/update/[id]");
       } else {
         await createHouse({
           title: data.title,
@@ -130,6 +134,22 @@ const HouseForm = ({
 
   const handlePrice = async () => {
     setLoadingPrice(true);
+    const formData = getValues();
+
+    try {
+      const { data } = await getPriceRecommendation({
+        yearBuilt: Number(formData.yearBuilt),
+        garageCars: Number(formData.garageCars),
+      });
+
+      if (data.price) {
+        setValue("salePrice", data.price);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingPrice(false);
+    }
   };
 
   return (

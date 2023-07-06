@@ -6,9 +6,10 @@ import { HousesController } from './controllers/houses.controller';
 import { SearchModule } from 'src/search/search.module';
 import { HousesSearchService } from './services/houses-search.service';
 import { HouseSubscriber } from './subscribers/house.subscriber';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([House]), SearchModule],
+  imports: [TypeOrmModule.forFeature([House]), SearchModule, HttpModule],
   providers: [HousesService, HousesSearchService, HouseSubscriber],
   controllers: [HousesController],
 })

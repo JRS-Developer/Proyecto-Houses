@@ -1,6 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AxiosError } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
 import { FindManyOptions, Repository } from 'typeorm';
+import { CalculateHousePriceDto } from '../dto/calculate-house-price.dto';
 import { CreateHouseDto } from '../dto/create-house.dto';
 import { UpdateHouseDto } from '../dto/update-house.dto';
 import { House } from '../entities/houses.entity';
@@ -10,6 +18,7 @@ export class HousesService {
   constructor(
     @InjectRepository(House)
     private readonly housesReporsitory: Repository<House>,
+    private readonly httpService: HttpService,
   ) {}
 
   async find(options?: FindManyOptions<House>) {
@@ -66,6 +75,24 @@ export class HousesService {
         },
       },
     });
+  }
+
+  async getPriceCalculation(dto: CalculateHousePriceDto) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<{
+          price: number;
+        }>('http://localhost:8000/houses/price', dto)
+        .pipe(
+          catchError((err: AxiosError) => {
+            console.error('err ', err.message);
+
+            throw new BadRequestException();
+          }),
+        ),
+    );
+
+    return data;
   }
 
   async getUserHouse(userId: number, houseId: number) {

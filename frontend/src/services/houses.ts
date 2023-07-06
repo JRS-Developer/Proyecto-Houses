@@ -40,6 +40,18 @@ export const getHouse = async (id: number, token?: CookieValueTypes) => {
   return res;
 };
 
+export const getPriceRecommendation = async (
+  data: Omit<CreateHouseData, "salePrice" | "title">
+) => {
+  const res = await axiosAPI.post<{
+    data: {
+      price: number;
+    };
+  }>(API_ROUTES.houses.calculatePrice, data);
+
+  return res.data;
+};
+
 export const updateHouse = async (
   id: number,
   data: Partial<CreateHouseData>

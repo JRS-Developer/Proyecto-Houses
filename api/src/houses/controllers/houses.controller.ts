@@ -51,7 +51,15 @@ export class HousesController {
   @Auth()
   @Post('/calculate-price')
   async calculateHousePrice(@Body() body: CalculateHousePriceDto) {
-    // TODO: calculate house price
+    const data = await this.housesService.getPriceCalculation(body);
+
+    data.price = Math.round(data.price);
+
+    return {
+      data,
+      statusCode: HttpStatus.OK,
+      message: '',
+    };
   }
 
   @Get('/search')

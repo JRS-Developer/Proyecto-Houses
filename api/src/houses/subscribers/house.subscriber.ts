@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entities/users.entity';
-import { UsersService } from 'src/users/services/users.service';
 import {
   DataSource,
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
   RemoveEvent,
+  UpdateEvent,
 } from 'typeorm';
 import { House } from '../entities/houses.entity';
 import { HouseIndex } from '../indexes/house.index';
@@ -50,6 +49,31 @@ export class HouseSubscriber implements EntitySubscriberInterface<House> {
     await this.houseSearch.insert(data);
   }
 
+  async afterUpdate(event: UpdateEvent<any>) {
+    const entity = event.entity;
+    if (!entity?.id) return;
+
+    const house = await event.manager.getRepository(House).findOne({
+      where: {
+        id: entity.id,
+      },
+    });
+
+    if (!house) return;
+
+    const data: HouseIndex = {
+      id: house.id,
+      title: house.title,
+      salePrice: house.salePrice,
+      houseStyle: house.houseStyle,
+      firePlaces: house.firePlaces,
+      garageCars: house.garageCars,
+      garageCond: house.garageCond,
+      yearBuilt: house.yearBuilt,
+    };
+
+    await this.houseSearch.insert(data);
+  }
   async beforeRemove(event: RemoveEvent<House>): Promise<void> {
     if (!event.entity) return;
     await this.houseSearch.delete(event.entity.id);

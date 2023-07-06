@@ -3,4 +3,5 @@ import { CreateHouseDto } from './create-house.dto';
 
 export class CalculateHousePriceDto extends OmitType(CreateHouseDto, [
   'title',
+  'salePrice',
 ] as const) {}
