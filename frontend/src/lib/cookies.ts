@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 type OptionsType = NonNullable<Parameters<typeof getCookie>["1"]>;
 
 export const COOKIES_KEYS = {
-  TOKEN: "token",
+  TOKEN: "token_house",
 };
 
 export const getCookieExpiration = (key: keyof typeof COOKIES_KEYS): Date => {

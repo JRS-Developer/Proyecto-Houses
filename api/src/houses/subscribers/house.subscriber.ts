@@ -11,6 +11,35 @@ import { House } from '../entities/houses.entity';
 import { HouseIndex } from '../indexes/house.index';
 import { HousesSearchService } from '../services/houses-search.service';
 
+const getHouseIndex = (house: House): HouseIndex => {
+  return {
+    id: house.id,
+    title: house.title,
+    address: house.address,
+    salePrice: house.salePrice,
+    image: house.image,
+    houseStyle: house.houseStyle,
+    firePlaces: house.firePlaces,
+    garageCars: house.garageCars,
+    garageCond: house.garageCond,
+    yearBuilt: house.yearBuilt,
+    fullBath: house.fullBath,
+    bedRoomAbvGr: house.bedRoomAbvGr,
+    fireplaceQu: house.fireplaceQu,
+    garageArea: house.garageArea,
+    utilities: house.utilities,
+    poolQC: house.poolQC,
+    kitchenAbvGr: house.kitchenAbvGr,
+    lotArea: house.lotArea,
+    poolArea: house.poolArea,
+    garageYrBlt: house.garageYrBlt,
+    garageType: house.garageType,
+    kitchenQual: house.kitchenQual,
+    garageQual: house.garageQual,
+    garageFinish: house.garageFinish,
+  };
+};
+
 @EventSubscriber()
 @Injectable()
 export class HouseSubscriber implements EntitySubscriberInterface<House> {
@@ -35,16 +64,7 @@ export class HouseSubscriber implements EntitySubscriberInterface<House> {
 
     if (!house) return;
 
-    const data: HouseIndex = {
-      id: house.id,
-      title: house.title,
-      salePrice: house.salePrice,
-      houseStyle: house.houseStyle,
-      firePlaces: house.firePlaces,
-      garageCars: house.garageCars,
-      garageCond: house.garageCond,
-      yearBuilt: house.yearBuilt,
-    };
+    const data: HouseIndex = getHouseIndex(house);
 
     await this.houseSearch.insert(data);
   }
@@ -61,16 +81,7 @@ export class HouseSubscriber implements EntitySubscriberInterface<House> {
 
     if (!house) return;
 
-    const data: HouseIndex = {
-      id: house.id,
-      title: house.title,
-      salePrice: house.salePrice,
-      houseStyle: house.houseStyle,
-      firePlaces: house.firePlaces,
-      garageCars: house.garageCars,
-      garageCond: house.garageCond,
-      yearBuilt: house.yearBuilt,
-    };
+    const data: HouseIndex = getHouseIndex(house);
 
     await this.houseSearch.insert(data);
   }

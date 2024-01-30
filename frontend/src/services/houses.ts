@@ -6,9 +6,21 @@ import { API_ROUTES } from "./api-routes";
 type GetHousesResponse = House[];
 type CreateHouseData = {
   title: string;
-  salePrice: number;
-  yearBuilt: number;
+  address: string;
   garageCars: number;
+  yearBuilt: number;
+  salePrice: number;
+  kitchenAbvGr: number;
+  bedRoomAbvGr: number;
+  fullBath: number;
+  image: string;
+};
+
+export type SearchHousesResponse = {
+  data: House[];
+  total: number;
+  limit: number;
+  offset: number;
 };
 
 export const getHouses = async (token?: CookieValueTypes) => {
@@ -20,28 +32,44 @@ export const getHouses = async (token?: CookieValueTypes) => {
             Authorization: `Bearer ${token}`,
           }
         : {},
-    }
+    },
   );
   return response.data;
 };
 
 export const getHouse = async (id: number, token?: CookieValueTypes) => {
-  const res: House = await fetch(
-    `http://localhost:3000${API_ROUTES.houses.one(id)}`,
-    {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : {},
+  const res = await axiosAPI.get<
+    House & {
+      user: {
+        id: number;
+      };
     }
-  ).then((res) => res.json());
+  >(API_ROUTES.houses.one(id), {
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : {},
+  });
 
-  return res;
+  return res.data;
+};
+
+export const searchHouses = async (query: {
+  q?: string;
+  limit?: string;
+  offset?: string;
+}) => {
+  const searchParams = new URLSearchParams(query);
+  const { data } = await axiosAPI.get<SearchHousesResponse>(
+    `/houses/search?${searchParams.toString()}`,
+  );
+
+  return data;
 };
 
 export const getPriceRecommendation = async (
-  data: Omit<CreateHouseData, "salePrice" | "title">
+  data: Omit<CreateHouseData, "salePrice" | "title">,
 ) => {
   const res = await axiosAPI.post<{
     data: {
@@ -54,11 +82,11 @@ export const getPriceRecommendation = async (
 
 export const updateHouse = async (
   id: number,
-  data: Partial<CreateHouseData>
+  data: Partial<CreateHouseData>,
 ) => {
   const res = await axiosAPI.put<{ message: string }>(
     API_ROUTES.houses.update(id),
-    data
+    data,
   );
 
   return res.data;
@@ -67,7 +95,7 @@ export const updateHouse = async (
 export const createHouse = async (data: CreateHouseData) => {
   const res = await axiosAPI.post<{ message: string }>(
     API_ROUTES.houses.create,
-    data
+    data,
   );
 
   return res.data;

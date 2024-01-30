@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/useAuthStore";
-import axios, { AxiosHeaders } from "axios";
+import axios, { AxiosHeaders, isAxiosError } from "axios";
 import { getAccessToken } from "./cookies";
 
 const axiosAPI = axios.create({
@@ -17,7 +17,7 @@ axiosAPI.interceptors.request.use((config) => {
     // https://github.com/axios/axios/issues/5416
     (config.headers as AxiosHeaders).set(
       "Authorization",
-      `Bearer ${accessToken}`
+      `Bearer ${accessToken}`,
     );
   }
 
@@ -26,20 +26,16 @@ axiosAPI.interceptors.request.use((config) => {
 
 const handleAxiosError = (
   error: unknown,
-  handler: (message: string) => void
+  handler: (message: string) => void,
 ) => {
-  if (axios.isAxiosError(error)) {
-    const { response } = error;
-    const data = response?.data as { message: string };
-
-    if (data?.message) {
-      handler(data.message);
-    }
-
-    return;
+  let message = "Unknown error";
+  if (isAxiosError(error)) {
+    message = error.response?.data?.message || error.message;
+  } else if (error instanceof Error) {
+    message = error.message;
   }
 
-  console.error(error);
+  return handler(Array.isArray(message) ? message[0] : message);
 };
 
 export { axiosAPI, handleAxiosError };

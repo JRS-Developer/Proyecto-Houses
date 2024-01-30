@@ -48,7 +48,6 @@ export class HousesController {
     };
   }
 
-  @Auth()
   @Post('/calculate-price')
   async calculateHousePrice(@Body() body: CalculateHousePriceDto) {
     const data = await this.housesService.getPriceCalculation(body);
@@ -68,16 +67,18 @@ export class HousesController {
 
     return {
       data: data?.body?.hits?.hits?.map((h) => h?._source),
+      total:
+        typeof data?.body.hits.total === 'object'
+          ? data?.body.hits.total.value
+          : data?.body.hits.total,
+      limit: query.limit,
+      offset: query.offset,
     };
   }
 
-  @Auth()
   @Get('/:id')
-  async getHouse(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) houseId: number,
-  ) {
-    return this.housesService.getUserHouse(userId, houseId);
+  async getHouse(@Param('id', ParseIntPipe) houseId: number) {
+    return this.housesService.getHouse(houseId);
   }
 
   @Auth()

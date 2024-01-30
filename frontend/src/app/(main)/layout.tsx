@@ -3,6 +3,7 @@ import { getProfile } from "@/services/auth/profile";
 import { cookies } from "next/headers";
 import { Navbar } from "./Navbar";
 import AuthProvider from "@/components/providers/AuthProvider";
+import SocketHandler from "@/components/SocketHandler";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const token = cookies().get(COOKIES_KEYS.TOKEN)?.value;
@@ -22,6 +23,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
             {children}
           </main>
         </div>
+        <SocketHandler />
       </AuthProvider>
     </>
   );

@@ -2,7 +2,6 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 import { Loader } from "./loader";
 
 const buttonVariants = cva(
@@ -31,7 +30,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -56,7 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <button
@@ -73,7 +72,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         </>
       </button>
     );
-  }
+  },
 );
 Button.displayName = "Button";
 

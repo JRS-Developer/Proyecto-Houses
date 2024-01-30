@@ -54,7 +54,7 @@ const Login = () => {
       setToken: s.setToken,
       initializeAuth: s.initialize,
     }),
-    shallow
+    shallow,
   );
 
   const { push } = useRouter();
@@ -75,16 +75,17 @@ const Login = () => {
     try {
       const res = await axiosAPI.post<{ access_token: string }>(
         "/auth/login",
-        data
+        data,
       );
 
+      console.log({ res });
       setToken(res.data.access_token);
       initializeAuth();
 
       push("/dashboard");
     } catch (e) {
+      console.log({ e });
       handleAxiosError(e, (m) => {
-        console.log(m);
         setError("responseError", {
           message: m,
         });

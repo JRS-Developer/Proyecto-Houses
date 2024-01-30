@@ -42,7 +42,10 @@ export class HousesSearchService {
 
       console.log('HouseSearchService: dbTotal', dbDataCount);
 
-      if (!total || dbDataCount > total) {
+      if (!total || dbDataCount !== total) {
+        await this.searchService.deleteIndex({
+          index: this.index,
+        });
         const houses = await this.dataSource.getRepository(House).find();
 
         await this.insert(houses);
@@ -94,8 +97,8 @@ export class HousesSearchService {
 
     const result = await this.searchService.searchIndex({
       index: this.index,
-      /* from: offset, */
-      /* size: limit, */
+      from: dto.offset,
+      size: dto.limit,
       body: {
         query: {
           bool: {

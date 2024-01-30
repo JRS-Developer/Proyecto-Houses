@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { House } from "@/types/house";
+import { formatHousePrice } from "@/utils/houses";
 
 const HouseCard = ({
   house: h,
@@ -44,11 +45,11 @@ const HouseCard = ({
         )}
       </div>
 
-      <Link href="/dashboard/test">
+      <Link href={`/house/${h.id}`}>
         <div className="h-[250px] w-full relative rounded-md overflow-hidden ">
           <Image
             priority
-            src={`https://loremflickr.com/1280/853/house?random=${h.id}`}
+            src={h.image}
             alt={h.title}
             className="object-cover group-hover:opacity-75"
             fill
@@ -56,10 +57,7 @@ const HouseCard = ({
         </div>
         <h3 className="mt-4 text-sm text-gray-700">{h.title}</h3>
         <p className="mt-1 text-lg font-medium text-gray-900">
-          {Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-          }).format(h.salePrice)}
+          {formatHousePrice(h.salePrice)}
         </p>
       </Link>
     </div>

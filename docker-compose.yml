@@ -7,7 +7,7 @@ services:
     env_file:
       .env
     depends_on:
-      - postgres
+      - db
     volumes:
       - ./api:/usr/src/app
       - /usr/src/app/node_modules
@@ -41,9 +41,8 @@ services:
       - 9200:9200 # REST API
       - 9600:9600 # Performance Analyzer
 
-  postgres:
+  db:
     image: postgres
-    container_name: postgres
     environment:
       POSTGRES_DB: ${DB_NAME:?err}
       POSTGRES_USER: ${DB_USER:?err}

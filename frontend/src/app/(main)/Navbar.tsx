@@ -8,8 +8,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useProfile } from "@/hooks/useProfile";
 import { Disclosure } from "@headlessui/react";
-import { X, Menu as MenuIcon, Search, ArrowRight, User } from "lucide-react";
-import Image from "next/image";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import {
+  X,
+  Menu as MenuIcon,
+  ArrowRight,
+  UserIcon,
+  HomeIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useMemo } from "react";
@@ -33,7 +39,7 @@ export const Navbar = () => {
     <Disclosure as="nav" className="border-solid border-b">
       {({ open }) => (
         <>
-          <div className="mx-auto container px-2 sm:px-6 lg:px-8">
+          <div className="mx-auto container ">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
@@ -48,20 +54,7 @@ export const Navbar = () => {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <Link href="/" className="flex flex-shrink-0 items-center">
-                  <Image
-                    height={32}
-                    width={38}
-                    className="lg:hidden"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
-                  <Image
-                    height={32}
-                    width={38}
-                    className="hidden lg:block"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
+                  <HomeIcon size={32} />
                 </Link>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -86,21 +79,26 @@ export const Navbar = () => {
                     rightIcon={<ArrowRight />}
                     onClick={() => push("/auth/login")}
                   >
-                    Iniciar Sesion
+                    Login
                   </Button>
                 )}
                 {profile && (
                   <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <div>
-                        <span className="sr-only">Open user menu</span>
-                        <User />
-                      </div>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        className="rounded-full border border-gray-200 w-8 h-8 dark:border-gray-800"
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <UserIcon />
+                        <span className="sr-only">Toggle user menu</span>
+                      </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
                         <Link href="/dashboard">Dashboard</Link>
                       </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <a href="/auth/logout">Cerrar Sesion</a>
                       </DropdownMenuItem>

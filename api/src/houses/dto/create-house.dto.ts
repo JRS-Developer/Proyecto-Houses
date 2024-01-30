@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  IsUrl,
   Max,
   Min,
 } from 'class-validator';
@@ -26,4 +27,19 @@ export class CreateHouseDto {
   @IsInt()
   @Min(0)
   garageCars = 0;
+
+  @IsString()
+  address!: string;
+
+  @IsInt()
+  @Min(0)
+  bedRoomAbvGr!: number;
+
+  @IsInt()
+  @Min(0)
+  fullBath!: number;
+
+  @IsString()
+  @IsUrl()
+  image!: string;
 }

@@ -26,12 +26,8 @@ export class HousesService {
   }
 
   async create(dto: CreateHouseDto, userId: number) {
-    const house = new House();
-    house.title = dto.title;
-    house.salePrice = dto.salePrice;
+    const house = this.housesReporsitory.create(dto);
     house.userId = userId;
-    house.yearBuilt = dto.yearBuilt;
-    house.garageCars = dto.garageCars;
 
     return await this.housesReporsitory.save(house);
   }
@@ -48,23 +44,9 @@ export class HousesService {
       throw new NotFoundException('House not found');
     }
 
-    if (dto.title) {
-      foundHouse.title = dto.title;
-    }
+    const houseToSave = this.housesReporsitory.merge(foundHouse, dto);
 
-    if (dto.salePrice) {
-      foundHouse.salePrice = dto.salePrice;
-    }
-
-    if (dto.yearBuilt) {
-      foundHouse.yearBuilt = dto.yearBuilt;
-    }
-
-    if (dto.garageCars !== undefined) {
-      foundHouse.garageCars = dto.garageCars;
-    }
-
-    return await this.housesReporsitory.save(foundHouse);
+    return await this.housesReporsitory.save(houseToSave);
   }
 
   async getUserHouses(userId: number) {
@@ -82,7 +64,7 @@ export class HousesService {
       this.httpService
         .post<{
           price: number;
-        }>('http://localhost:8000/houses/price', dto)
+        }>('http://localhost:5000/houses/price', dto)
         .pipe(
           catchError((err: AxiosError) => {
             console.error('err ', err.message);
@@ -95,12 +77,18 @@ export class HousesService {
     return data;
   }
 
-  async getUserHouse(userId: number, houseId: number) {
+  async getHouse(houseId: number) {
     const house = await this.housesReporsitory.findOne({
       where: {
         id: houseId,
+      },
+      relations: { user: true },
+      select: {
         user: {
-          id: userId,
+          id: true,
+          firstName: true,
+          lastName: true,
+          image: true,
         },
       },
     });
